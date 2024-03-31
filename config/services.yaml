@@ -1,0 +1,23 @@
+# config/services.yaml
+parameters:
+    openai.api_key: '%env(OPENAI_API_KEY)%'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # Configuração para ApiManagerGPT com injeção via métodos setters
+    App\Service\ServiceGPT\ApiManagerGPT:
+        calls:
+            - method: 'setHttpClient'
+              arguments: ['@http_client']
+            - method: 'setOpenAiApiKey'
+              arguments: ['%openai.api_key%']
